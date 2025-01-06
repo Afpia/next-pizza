@@ -8,6 +8,7 @@
 		"dev": "next dev",
 		"build": "next build",
 		"start": "next start",
+		"lint:next": "next lint --rulesdir .",
 		"lint:fix": "eslint --fix .",
 		"lint": "eslint .",
 		"commit": "git add . && git-cz"
