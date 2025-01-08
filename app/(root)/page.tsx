@@ -1,4 +1,4 @@
-import { Container, Filters, Title, TopBar } from '@/components/shared'
+import { Container, Filters, ProductsGroupList, Title, TopBar } from '@/components/shared'
 
 export default function Home() {
 	return (
@@ -20,14 +20,22 @@ export default function Home() {
 						<div className='flex flex-col gap-16'>
 							{/* {categories.map(
 								(category) =>
-									category.products.length > 0 && (
-										<ProductsGroupList
-											key={category.id}
-											title={category.name}
-											categoryId={category.id}
-											items={category.products}
-										/>
-									)
+									category.products.length > 0 && ( */}
+							<ProductsGroupList
+								key={1}
+								title='Пиццы'
+								items={[
+									{
+										id: 1,
+										imageUrl: 'https://media.dodostatic.net/image/r:292x292/11ef9c1daafcf3529a62947b9522a8fe.avif',
+										ingredients: [],
+										name: 'Пицца 1',
+										items: [{ price: 100 }]
+									}
+								]}
+								categoryId={1}
+							/>
+							{/* )
 							)} */}
 						</div>
 					</div>

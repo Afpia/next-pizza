@@ -1,5 +1,6 @@
 export * from './container'
+export * from './filters'
 export * from './header'
+export * from './products'
 export * from './title'
 export * from './top-bar'
-export * from './filters'
