@@ -7,12 +7,34 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum OrderStatus {
+  PENDING
+  SUCCEEDED
+  CANCELLED
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
 model User {
   id Int @id @default(autoincrement())
 
   fullName String
-  email    String @unique
+  email    String    @unique
   password String
+  role     UserRole  @default(USER)
+  verified DateTime?
+
+  provider   String?
+  providerId String?
+
+  cartId Cart?
+
+  orders Order[]
+
+  VerificationCode VerificationCode?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -34,10 +56,60 @@ model Product {
   name     String
   imageUrl String
 
-	ingredients Ingredient[]
+  ingredients Ingredient[]
 
   category   Category @relation(fields: [categoryId], references: [id])
   categoryId Int
+
+  variations Variation[] // к одному множество вариаций
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Cart {
+  id Int @id @default(autoincrement())
+
+  user   User? @relation(fields: [userId], references: [id])
+  userId Int?  @unique
+
+  token       Int
+  totalAmount Int @default(0)
+
+  items CartProduct[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CartProduct {
+  id Int @id @default(autoincrement())
+
+  cart   Cart @relation(fields: [cartId], references: [id])
+  cartId Int
+
+  variations       Variation @relation(fields: [variationsItemId], references: [id])
+  variationsItemId Int
+
+  quantity Int @default(1)
+
+  ingredients Ingredient[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Variation {
+  id Int @id @default(autoincrement())
+
+  price Int
+  size  Int?
+  type  Int
+
+  cartItems CartProduct[] // на эту вариацию ссылаются все CardProduct, всех пользователей кто её выбрал, в бд
+
+  product   Product @relation(fields: [productId], references: [id])
+  productId Int
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -50,8 +122,45 @@ model Ingredient {
   price    Int
   imageUrl String
 
-	products Product[]
+  products Product[]
+
+  cartItems CartProduct[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Order {
+  id Int @id @default(autoincrement())
+
+  user   User? @relation(fields: [userId], references: [id])
+  userId Int?
+
+  token String
+
+  totalAmount Int
+  status      OrderStatus
+  paymentId   String?
+
+  items Json
+
+  fullName String
+  email    String
+  phone    String
+  address  String
+  comment  String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model VerificationCode {
+  id Int @id @default(autoincrement())
+
+  user   User @relation(fields: [userId], references: [id])
+  userId Int  @unique
+
+  code String
+
+  createdAt DateTime @default(now())
 }
